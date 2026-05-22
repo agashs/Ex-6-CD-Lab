@@ -1,6 +1,8 @@
 # Ex-6-IMPLEMENTATION-OF-THE-BACK-END-OF-THE-COMPILER-
 IMPLEMENTATION OF THE BACK END OF THE COMPILER 
-# Date :
+# Date :22-05-2026
+# Name :AGASH S
+# Reg No :212224040014
 # Aim :
 To write a program to implement the back end of the compiler.
 # ALGORITHM
@@ -11,6 +13,73 @@ To write a program to implement the back end of the compiler.
 5. Target code for the given statement is produced.
 6. Stop the program.
 # PROGRAM
+Input file
+```c
+t1 = a + b
+t2 = t1 * c
+t3 = t2 - d
+t4 = t3 / e
+x = t4
+```
+Program File:
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    char line[100], op1[20], op2[20], res[20], op;
+    char filename[50];
+    FILE *fp;
+    int reg = 0;
+
+    printf("Enter the filename of the intermediate code: ");
+    scanf("%s", filename);
+
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Error: Could not open file '%s'.\n", filename);
+        return 1;
+    }
+
+    printf("\nIntermediate Code:\n\n");
+    while (fgets(line, sizeof(line), fp)) {
+        printf("\t\t%s", line);
+    }
+
+    rewind(fp);
+
+    printf("\n\n\tStatement\t\tTarget Code\n\n");
+
+    while (fgets(line, sizeof(line), fp)) {
+        line[strcspn(line, "\n")] = 0;
+
+        if (line[0] == '\0') continue;
+
+        if (sscanf(line, "%s = %s %c %s", res, op1, &op, op2) == 4) {
+            printf("\t%s\t\tMOV %s, R%d\n", line, op2, reg);
+            printf("\t\t\t\t");
+            switch (op) {
+                case '+': printf("ADD "); break;
+                case '-': printf("SUB "); break;
+                case '*': printf("MUL "); break;
+                case '/': printf("DIV "); break;
+                default:  printf("UNK "); break;
+            }
+            printf("%s, R%d\n\n", op1, reg);
+            reg++;
+        } else if (sscanf(line, "%s = %s", res, op1) == 2) {
+            printf("\t%s\t\tMOV %s, R%d\n\n", line, op1, reg);
+            reg++;
+        }
+    }
+
+    fclose(fp);
+    return 0;
+}
+```
 # OUTPUT
+<img width="1480" height="746" alt="image" src="https://github.com/user-attachments/assets/e458d88f-78c0-4d39-aab6-06fc78d20cfb" />
+
 # Result
 The back end of the compiler is implemented successfully, and the output is verified.
